@@ -1,38 +1,52 @@
 from bs4 import BeautifulSoup
-import re
-import json
-import math
-import itertools
-from operator import itemgetter
-from collections import defaultdict
-import datetime
-import requests
 from requests_html import HTMLSession
 import time
 import pickle
+import sys
+import person
+import json
+sys.setrecursionlimit(1000000)
 
 class data:
     start_urls = []
+    """
     for m in range(9, 13):
-        start_urls.append("https://www.swimrankings.net/index.php?page=meetSelect&nationId=0&meetType=1&\selectPage=2016_m" \
-                          + str(m))
-    for m in range(1, 9):
         start_urls.append("https://www.swimrankings.net/index.php?page=meetSelect&nationId=0&meetType=1&selectPage=2015_m" \
                           + str(m))
+    for m in range(1, 4):
+        start_urls.append("https://www.swimrankings.net/index.php?page=meetSelect&nationId=0&meetType=1&selectPage=2016_m" \
+                          + str(m))
+    
+    for m in range(4, 6):
+        start_urls.append("https://www.swimrankings.net/index.php?page=meetSelect&nationId=0&meetType=1&selectPage=2016_m" \
+                          + str(m))
+    """
+    for m in range(6, 9):
+        start_urls.append("https://www.swimrankings.net/index.php?page=meetSelect&nationId=0&meetType=1&selectPage=2016_m" \
+                          + str(m))
+
     def __init__(self):
-        """
         self.races = {}
+        print(self.start_urls)
         competitions = self.competition_finder()
+        count = 0
+        
+        
         for comp in competitions:
-            time.sleep(.2)
+            if count % 50 == 1:
+                time.sleep(10)
             self.competition_extract(comp)
-        pickle.dump(self.races, open('save.p', 'rb'))
-        """
+            count += 1
+        #pickle.dump(self.races, open('save.p', 'wb'))
+        with open('result4.json', 'w') as fp:
+            json.dump(self.races, fp)
+
 
     def competition_extract(self, url=""):
         session = HTMLSession()
         r = session.get(url)
         soup = BeautifulSoup(r.content, 'html.parser')
+        time.sleep(.4)
 
         names = []
         times = []
@@ -63,6 +77,7 @@ class data:
     def competition_finder(self):
         competitions = []
         for url in data.start_urls:
+            time.sleep(.4)
             session = HTMLSession()
             r = session.get(url)
             soup = BeautifulSoup(r.content, 'html.parser')
@@ -78,7 +93,7 @@ class data:
         return competitions
 
     def test(self):
-        x = {'hi': 1, 'wut':2}
+        x = {'hi': 1, 'wut':2, 'my nig':3}
         pickle.dump(x, open("save.p", "wb"))
 
     def test2(self):
