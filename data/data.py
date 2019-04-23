@@ -8,34 +8,51 @@ from collections import defaultdict
 import datetime
 import requests
 from requests_html import HTMLSession
+import time
 
 class data:
-    start_urls = ["https://www.swimrankings.net/index.php?page=meetSelect&nationId=0&meetType=1&selectPage=2015_m9"]
+    start_urls = []
+    for m in range(9, 13):
+        start_urls.append("https://www.swimrankings.net/index.php?page=meetSelect&nationId=0&meetType=1&\selectPage=2016_m" \
+                          + str(m))
+    for m in range(1, 9):
+        start_urls.append("https://www.swimrankings.net/index.php?page=meetSelect&nationId=0&meetType=1&selectPage=2015_m" \
+                          + str(m))
     def __init__(self):
         self.races = {}
+        competitions = self.competition_finder()
+        for comp in competitions:
+            time.sleep(.2)
+            self.competition_extract(comp)
 
-    def page_extract(self, url=""):
+    def competition_extract(self, url=""):
         session = HTMLSession()
         r = session.get(url)
         soup = BeautifulSoup(r.content, 'html.parser')
 
         names = []
-        count = 0
-        for name in soup.find_all(class_='name'):
+        times = []
+        count = 1
+        """for name in soup.find_all(class_='name'):
             if count % 2 == 0:
                 names.append(name.get_text())
             count += 1
-        times = []
         for time in soup.find_all(class_='swimtime'):
-            times.append(time.get_text())
-        print(names)
-        print(times)
+            times.append(time.get_text())"""
+        swimmer = soup.find(class_='meetResult0')
+        while swimmer:
+            info = swimmer.contents
+            names.append(info[1].string)
+            times.append(info[5].string)
+            swimmer = swimmer.next_sibling
 
         title = soup.find(class_='titleLeft').get_text()
         title = title.replace(" ", "_")
         print(title)
         race = {}
-        for i in range(8):
+        if len(times) < 8:
+            return race
+        for i in range(len(times)):
             race[names[i]] = [i + 1, times[i]]
         self.races[title] = race
 
@@ -53,11 +70,9 @@ class data:
                 if quality_indicator == full_quality:
                     url = meet.parent.find_all('a')[1].get('href')
                     print(url)
-                    competitions.append("https://www.swimrankings.net/index.php" + url)
-            return competitions
+                    competitions.append("https://www.swimrankings.net/index.php" + url + "&gender=1&styleId=2")
+        return competitions
 
 
 x = data()
-#x.page_extract("https://www.swimrankings.net/index.php?page=meetDetail&meetId=596227&gender=1&styleId=2")
-x.page_finder()
-#print(x.races)
+print(x.races)
