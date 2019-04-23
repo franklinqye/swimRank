@@ -9,6 +9,7 @@ import datetime
 import requests
 from requests_html import HTMLSession
 import time
+import pickle
 
 class data:
     start_urls = []
@@ -19,11 +20,14 @@ class data:
         start_urls.append("https://www.swimrankings.net/index.php?page=meetSelect&nationId=0&meetType=1&selectPage=2015_m" \
                           + str(m))
     def __init__(self):
+        """
         self.races = {}
         competitions = self.competition_finder()
         for comp in competitions:
             time.sleep(.2)
             self.competition_extract(comp)
+        pickle.dump(self.races, open('save.p', 'rb'))
+        """
 
     def competition_extract(self, url=""):
         session = HTMLSession()
@@ -73,6 +77,14 @@ class data:
                     competitions.append("https://www.swimrankings.net/index.php" + url + "&gender=1&styleId=2")
         return competitions
 
+    def test(self):
+        x = {'hi': 1, 'wut':2}
+        pickle.dump(x, open("save.p", "wb"))
+
+    def test2(self):
+        x = pickle.load(open("save.p", "rb"))
+        print(x)
 
 x = data()
-print(x.races)
+x.test()
+x.test2()
