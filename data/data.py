@@ -6,14 +6,17 @@ import itertools
 from operator import itemgetter
 from collections import defaultdict
 import datetime
+import requests
+from requests_html import HTMLSession
 
 class data:
     def __init__(self):
-        
+        self.races = {}
 
-    def page_extract(self, html):
-        with open("test.html") as fp:
-            soup = BeautifulSoup(fp, 'html.parser')
+    def page_extract(self, html=""):
+        session = HTMLSession()
+        r = session.get(html)
+        soup = BeautifulSoup(r.content, 'html.parser')
 
         names = []
         count = 0
@@ -33,3 +36,11 @@ class data:
         race = {}
         for i in range(8):
             race[names[i]] = [i + 1, times[i]]
+        self.races[title] = race
+
+    def page_finder(self):
+
+
+x = data()
+x.page_extract("https://www.swimrankings.net/index.php?page=meetDetail&meetId=596227&gender=1&styleId=2")
+print(x.races)
