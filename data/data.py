@@ -10,12 +10,13 @@ import requests
 from requests_html import HTMLSession
 
 class data:
+    start_urls = ["https://www.swimrankings.net/index.php?page=meetSelect&nationId=0&meetType=1&selectPage=2015_m9"]
     def __init__(self):
         self.races = {}
 
-    def page_extract(self, html=""):
+    def page_extract(self, url=""):
         session = HTMLSession()
-        r = session.get(html)
+        r = session.get(url)
         soup = BeautifulSoup(r.content, 'html.parser')
 
         names = []
@@ -38,9 +39,25 @@ class data:
             race[names[i]] = [i + 1, times[i]]
         self.races[title] = race
 
-    def page_finder(self):
+    def competition_finder(self):
+        competitions = []
+        for url in data.start_urls:
+            session = HTMLSession()
+            r = session.get(url)
+            soup = BeautifulSoup(r.content, 'html.parser')
+            possi_meets = soup.find_all('td', class_="course", string="50m")
+            full_quality = soup.find_all(src="images/meetQuality5.png")[-1]
+            count = 0
+            for meet in possi_meets:
+                quality_indicator = meet.previous_sibling.previous_sibling.contents[0]
+                if quality_indicator == full_quality:
+                    url = meet.parent.find_all('a')[1].get('href')
+                    print(url)
+                    competitions.append("https://www.swimrankings.net/index.php" + url)
+            return competitions
 
 
 x = data()
-x.page_extract("https://www.swimrankings.net/index.php?page=meetDetail&meetId=596227&gender=1&styleId=2")
-print(x.races)
+#x.page_extract("https://www.swimrankings.net/index.php?page=meetDetail&meetId=596227&gender=1&styleId=2")
+x.page_finder()
+#print(x.races)
