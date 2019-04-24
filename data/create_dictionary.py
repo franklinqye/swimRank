@@ -1,5 +1,5 @@
 import json
-import Swimmer
+from Meet import Meet
 
 def load_data(i):
     with open('result' + str(i) + '.json', 'r') as fp:
@@ -22,11 +22,18 @@ def main():
     merge_data(merge, dict3)
     merge_data(merge, dict4)
 
-    print(merge)
+    #print(merge)
 
-    swimmer_set = set()
+    swimmer_dict = {}
 
-    for competitor 
+    for competition in merge:
+        lost_to = []
+        for competitor in merge[competition]:
+            time = merge[competition][competitor][1]
+            meet = Meet(competition, lost_to, time)
+            if competitor in swimmer_dict.keys():
+                swimmer_dict[competitor].append(meet)
+            else:
+                swimmer_dict[competitor] = [meet]
 
-
-main()
+    return swimmer_dict
