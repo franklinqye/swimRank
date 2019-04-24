@@ -17,3 +17,6 @@ class Meet:
         self.lost_to = lost_to
         self.time = time
         self.place = len(self.lost_to) + 1
+
+    def __repr__(self):
+        return self.name

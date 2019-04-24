@@ -21,38 +21,24 @@ class Data_Scraper:
     """
     def __init__(self):
         self.start_urls = []
-        """
-        for m in range(9, 13):
-            self.start_urls.append("https://www.swimrankings.net/index.php?page=meetSelect&nationId=0&meetType=1&selectPage=2015_m" \
-                              + str(m))
-        for m in range(1, 4):
-            self.start_urls.append("https://www.swimrankings.net/index.php?page=meetSelect&nationId=0&meetType=1&selectPage=2016_m" \
-                              + str(m))
-        
-        for m in range(4, 6):
-            self.start_urls.append("https://www.swimrankings.net/index.php?page=meetSelect&nationId=0&meetType=1&selectPage=2016_m" \
-                              + str(m))
-        """
-        for m in range(6, 8):
-            self.start_urls.append(
-                "https://www.swimrankings.net/index.php?page=meetSelect&nationId=0&meetType=1&selectPage=2016_m" \
-                + str(m))
-        """
+        #edit the year and month at the end of url to specify. Make sure to change
+        #JSON number
         self.start_urls.append("https://www.swimrankings.net/index.php?page=meetSelect&nationId=0&meetType=1&selectPage=2016_m8")
-        """
-
         self.races = {}
+
+    def main(self):
+
         print(self.start_urls)
         competitions = self.competition_finder()
         count = 0
-        
-        
+
+
         for comp in competitions:
             if count % 50 == 1:
-                time.sleep(10)
+                time.sleep(30)
             self.competition_extract(comp)
             count += 1
-        with open('result4.json', 'w') as fp:
+        with open('result12.json', 'w') as fp:
             json.dump(self.races, fp)
 
 
@@ -75,7 +61,7 @@ class Data_Scraper:
         swimmer = None
         for heat in heats:
             event = heat.contents[0].contents[1]
-            if event == "Men, 100m Freestyle, Timed Final,  Open" \
+            if event == 'Men, 100m Freestyle, Timed Final,  Open'\
                     or event == 'Men, 100m Freestyle, Final,  Open'\
                     or event == 'Men, 100m Freestyle, Final,  18 years and older':
                 swimmer = heat.next_sibling
@@ -94,7 +80,7 @@ class Data_Scraper:
         if len(times) < 8:
             return
         for i in range(7):
-            if times[i] > times[i + 1]:
+            if times[i] > times[i + 1] and times[i] > str(60):
                 return
         for i in range(len(times)):
             race[names[i]] = [i + 1, times[i]]
@@ -126,4 +112,5 @@ class Data_Scraper:
         return competitions
 
 if __name__ == '__main__':
-    Data_Scraper()
+    x = Data_Scraper()
+    x.main()
