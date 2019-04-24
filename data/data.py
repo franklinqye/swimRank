@@ -1,31 +1,29 @@
 from bs4 import BeautifulSoup
 from requests_html import HTMLSession
 import time
-import pickle
-import sys
-import person
 import json
-sys.setrecursionlimit(1000000)
 
-class data:
-    start_urls = []
-    """
-    for m in range(9, 13):
-        start_urls.append("https://www.swimrankings.net/index.php?page=meetSelect&nationId=0&meetType=1&selectPage=2015_m" \
-                          + str(m))
-    for m in range(1, 4):
-        start_urls.append("https://www.swimrankings.net/index.php?page=meetSelect&nationId=0&meetType=1&selectPage=2016_m" \
-                          + str(m))
-    
-    for m in range(4, 6):
-        start_urls.append("https://www.swimrankings.net/index.php?page=meetSelect&nationId=0&meetType=1&selectPage=2016_m" \
-                          + str(m))
-    """
-    for m in range(6, 9):
-        start_urls.append("https://www.swimrankings.net/index.php?page=meetSelect&nationId=0&meetType=1&selectPage=2016_m" \
-                          + str(m))
+class Data_Scraper:
 
     def __init__(self):
+        self.start_urls = []
+        """
+        for m in range(9, 13):
+            self.start_urls.append("https://www.swimrankings.net/index.php?page=meetSelect&nationId=0&meetType=1&selectPage=2015_m" \
+                              + str(m))
+        for m in range(1, 4):
+            self.start_urls.append("https://www.swimrankings.net/index.php?page=meetSelect&nationId=0&meetType=1&selectPage=2016_m" \
+                              + str(m))
+
+        for m in range(4, 6):
+            self.start_urls.append("https://www.swimrankings.net/index.php?page=meetSelect&nationId=0&meetType=1&selectPage=2016_m" \
+                              + str(m))
+        """
+        for m in range(6, 9):
+            self.start_urls.append(
+                "https://www.swimrankings.net/index.php?page=meetSelect&nationId=0&meetType=1&selectPage=2016_m" \
+                + str(m))
+
         self.races = {}
         print(self.start_urls)
         competitions = self.competition_finder()
@@ -51,12 +49,7 @@ class data:
         names = []
         times = []
         count = 1
-        """for name in soup.find_all(class_='name'):
-            if count % 2 == 0:
-                names.append(name.get_text())
-            count += 1
-        for time in soup.find_all(class_='swimtime'):
-            times.append(time.get_text())"""
+
         swimmer = soup.find(class_='meetResult0')
         while swimmer:
             info = swimmer.contents
@@ -72,11 +65,13 @@ class data:
             return race
         for i in range(len(times)):
             race[names[i]] = [i + 1, times[i]]
+        while title in self.races:
+            title = title + '1'
         self.races[title] = race
 
     def competition_finder(self):
         competitions = []
-        for url in data.start_urls:
+        for url in self.start_urls:
             time.sleep(.4)
             session = HTMLSession()
             r = session.get(url)
@@ -92,14 +87,5 @@ class data:
                     competitions.append("https://www.swimrankings.net/index.php" + url + "&gender=1&styleId=2")
         return competitions
 
-    def test(self):
-        x = {'hi': 1, 'wut':2, 'my nig':3}
-        pickle.dump(x, open("save.p", "wb"))
-
-    def test2(self):
-        x = pickle.load(open("save.p", "rb"))
-        print(x)
-
-x = data()
-x.test()
-x.test2()
+if __name__ == '__main__':
+    Data_Scraper()
