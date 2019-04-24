@@ -1,11 +1,28 @@
+"""
+Short script to create a dictionary for PR algo. Requires python 3.6+
+for default ordered dictionaries.
+Use main() to get the dictionary.
+Dictionary contains swimmer names as keys, and meet[] objects as values.
+Concrete example: {'Phelps Michael' : [2016 Olympics, Worlds], 'Adrian, Nathan G' :[2016 Olympics, Pan America]}
+"""
+
 import json
 from Meet import Meet
 
+"""
+Helper function used to load .json files as dictionaries. I is the
+ith json file to load
+"""
 def load_data(i):
     with open('result' + str(i) + '.json', 'r') as fp:
         dict1 = json.load(fp)
     return dict1
 
+"""
+Merges two dictionaries. For conflicting keys, appends a '1' at
+the end to remove key conflicts and ensure that they are all added. 
+DICT adds it's key-value pairs into MERGE.
+"""
 def merge_data(merge, dict):
     for comp in dict:
         dummy = comp
@@ -13,16 +30,20 @@ def merge_data(merge, dict):
             dummy += '1'
         merge[dummy] = dict[comp]
 
+"""
+Uses merge_data() and load_data() to create a dictionary with
+swimmer-meet[] key-value pairs. Returns this dictionary.
+"""
 def main():
     merge = load_data(1)
     dict2 = load_data(2)
     dict3 = load_data(3)
     dict4 = load_data(4)
+    dict5 = load_data(5)
     merge_data(merge, dict2)
     merge_data(merge, dict3)
     merge_data(merge, dict4)
-
-    #print(merge)
+    merge_data(merge, dict5)
 
     swimmer_dict = {}
 
