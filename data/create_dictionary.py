@@ -58,7 +58,7 @@ def main():
     merge_data(merge, dict10)
     merge_data(merge, dict11)
     merge_data(merge, dict12)
-
+    print(len(merge))
     swimmer_dict = {}
 
     for competition in merge:
@@ -70,5 +70,6 @@ def main():
                 swimmer_dict[competitor].append(meet)
             else:
                 swimmer_dict[competitor] = [meet]
+            lost_to.append(competitor)
 
     return swimmer_dict
