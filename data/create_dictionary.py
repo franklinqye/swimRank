@@ -62,14 +62,15 @@ def main():
     swimmer_dict = {}
 
     for competition in merge:
-        lost_to = []
+        lost_to = [competition]
         for competitor in merge[competition]:
             time = merge[competition][competitor][1]
-            meet = Meet(competition, lost_to, time)
+            meet = Meet(competition, lost_to[:], time)
             if competitor in swimmer_dict.keys():
                 swimmer_dict[competitor].append(meet)
             else:
                 swimmer_dict[competitor] = [meet]
             lost_to.append(competitor)
+        swimmer_dict[competition] = [Meet(competition, lost_to[1:], time)]
 
     return swimmer_dict
